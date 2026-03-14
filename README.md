@@ -45,13 +45,13 @@ chmod +x setup.sh
 Open `auto_config.py` and update the **Configuration Section** at the top:
 
 ```python
-LOGIN_URL = "[http://192.168.1.5:8889](http://192.168.1.5:8889)"   # Your CMS Admin IP
-ADMIN_USERNAME = "admin"                # Your CMS username
-ADMIN_PASSWORD = "admin"                # Your CMS password
-MIN_SUBMISSION_INTERVAL = "30"          # Interval (seconds)
-TIME_LIMIT = "5.0"                      # Time limit (seconds)
-MEMORY_LIMIT = "512"                    # Memory limit (MB)
-SCORE_PER_TASK = "4"                    # Score parameters
+LOGIN_URL =                 "http://localhost:8889"     # Your CMS Admin IP
+ADMIN_USERNAME =            "admin"                     # Your CMS username
+ADMIN_PASSWORD =            "admin"                     # Your CMS password
+MIN_SUBMISSION_INTERVAL =   "0"                         # Interval (seconds)
+TIME_LIMIT =                "0"                         # Time limit (seconds)
+MEMORY_LIMIT =              "0"                         # Memory limit (MB)
+SCORE_PER_TASK =            "0"                         # Score parameters
 ```
 
 ### Step 2: Execution
