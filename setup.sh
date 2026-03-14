@@ -1,19 +1,43 @@
 #!/bin/bash
-echo "開始設定 CMS Auto Configurator 環境..."
 
-# 檢查是否安裝了 python3-venv (Ubuntu 常需要手動裝這個)
-if ! dpkg -l | grep -q python3-venv; then
-    echo "正在安裝 python3-venv..."
-    sudo apt update
-    sudo apt install -y python3-venv
+echo "Starting CMS Auto Configurator environment setup..."
+
+# 1. Check and install Google Chrome
+echo "Checking for Google Chrome..."
+if ! command -v google-chrome &> /dev/null; then
+    echo "Google Chrome is not installed. Downloading and installing..."
+    sudo apt-get update
+    sudo apt-get install -y wget
+    wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb -O /tmp/google-chrome.deb
+    sudo apt-get install -y /tmp/google-chrome.deb
+    rm /tmp/google-chrome.deb
+    echo "Google Chrome installation completed."
+else
+    echo "Google Chrome is already installed."
 fi
 
-# 建立名為 cms_env 的虛擬環境
-python3 -m venv cms_env
+# 2. Check and install python3-venv
+echo "Checking for python3-venv..."
+if ! dpkg -l | grep -q python3-venv; then
+    echo "Installing python3-venv..."
+    sudo apt-get update
+    sudo apt-get install -y python3-venv
+fi
 
-# 啟動虛擬環境並安裝套件
-source cms_env/bin/activate
+# 3. Create virtual environment
+echo "Creating virtual environment (tool_env)..."
+python3 -m venv tool_env
+
+# 4. Activate environment and install dependencies
+echo "Activating virtual environment and installing dependencies..."
+source tool_env/bin/activate
 pip install --upgrade pip
 pip install -r requirements.txt
 
-echo "設定完成！請輸入 'source cms_env/bin/activate' 來啟動環境，然後執行 'python auto_config.py'"
+echo ""
+echo "========================================="
+echo "Setup complete!"
+echo "To start the application, run the following commands:"
+echo "1. source tool_env/bin/activate"
+echo "2. python auto_config.py"
+echo "========================================="

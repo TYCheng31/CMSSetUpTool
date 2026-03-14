@@ -1,15 +1,21 @@
 @echo off
-echo 開始設定 CMS Auto Configurator 環境...
+echo Starting CMS Auto Configurator environment setup...
 
-REM 建立虛擬環境
-python -m venv cms_env
+REM 1. Create virtual environment
+echo Creating virtual environment (tool_env)...
+python -m venv tool_env
 
-REM 啟動並安裝套件
-call cms_env\Scripts\activate.bat
+REM 2. Activate environment and install packages
+echo Activating virtual environment and installing dependencies...
+call tool_env\Scripts\activate.bat
 python -m pip install --upgrade pip
 pip install -r requirements.txt
 
 echo.
-echo 設定完成！
-echo 請執行 'cms_env\Scripts\activate.bat' 來啟動環境，然後執行 'python auto_config.py'
+echo =========================================
+echo Setup complete!
+echo To start the application, run the following commands:
+echo 1. tool_env\Scripts\activate.bat
+echo 2. python auto_config.py
+echo =========================================
 pause
