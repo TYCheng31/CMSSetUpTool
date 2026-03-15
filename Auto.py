@@ -102,9 +102,9 @@ try:
     # ========================================================
     driver.get(LOGIN_URL)
     # 按下 show more (task)
-    show_more_xpath = "//a[@href='./tasks' and contains(., 'show more')]"
-    show_more_element = wait.until(EC.element_to_be_clickable((By.XPATH, show_more_xpath)))
-    driver.execute_script("arguments[0].click();", show_more_element)
+    tasks_link_xpath = "//a[contains(@href, 'tasks') and text()='Tasks']"
+    tasks_link_element = wait.until(EC.presence_of_element_located((By.XPATH, tasks_link_xpath)))
+    driver.execute_script("arguments[0].click();", tasks_link_element)
     time.sleep(1)
 
     # 抓取目前所有 task 網址
