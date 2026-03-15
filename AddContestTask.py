@@ -6,16 +6,7 @@ from selenium.webdriver.chrome.service import Service
 from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.support.ui import Select
 import time
-
-# ==========================================
-# 參數
-# ==========================================
-LOGIN_URL =                 "http://localhost:8889"         # cmsAdminWebServer IP (:8889)
-ADMIN_USERNAME =            "admin"                         # account
-ADMIN_PASSWORD =            "admin"                         # password
-CONTEST_NAME =              "NCUE"                          # contest name
-TASK_NAMES =                ["Q1", "Q2", "Q3", "Q4", "Q5"]  # task name
-# ==========================================
+from config import *
 
 options = webdriver.ChromeOptions()
 # 讓瀏覽器背景執行就取消註解 VVVVVVVVV

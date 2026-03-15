@@ -6,18 +6,7 @@ from selenium.webdriver.chrome.service import Service
 from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.support.ui import Select
 import time
-
-# ==========================================
-# 參數
-# ==========================================
-LOGIN_URL =                 "http://localhost:8889"     # cmsAdminWebServer IP (:8889)
-ADMIN_USERNAME =            "admin"                     # 帳號
-ADMIN_PASSWORD =            "admin"                     # 密碼
-MIN_SUBMISSION_INTERVAL =   "30"                        # 繳交間隔時間
-TIME_LIMIT =                "5.0"                       # 程式執行時間秒數 (秒)
-MEMORY_LIMIT =              "512"                       # 程式執行空間限制 (MB)
-SCORE_PER_TASK =            "4"                         # 每個測資的得分數
-# ==========================================
+from config import *
 
 options = webdriver.ChromeOptions()
 # 讓瀏覽器背景執行就取消註解 VVVVVVVVV
