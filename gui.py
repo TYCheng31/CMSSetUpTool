@@ -43,7 +43,7 @@ def open_tutorial():
 # ==========================================
 root = tk.Tk()
 root.title("CMS 全自動化控制面板")
-root.geometry("400x800") # 稍微調整高度以符合按鈕數量
+root.geometry("400x700") # 稍微調整高度以符合按鈕數量
 root.configure(padx=20, pady=20)
 
 # 使用教學 (移除 Emoji 避免 Ubuntu Tkinter 崩潰)
