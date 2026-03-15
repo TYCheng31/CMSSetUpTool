@@ -10,7 +10,7 @@ import time
 # ==========================================
 # 參數
 # ==========================================
-LOGIN_URL =                 "http://localhost:8889"   # cmsAdminWebServer IP (:8889)
+LOGIN_URL =                 "http://localhost:8889"     # cmsAdminWebServer IP (:8889)
 ADMIN_USERNAME =            "admin"                     # 帳號
 ADMIN_PASSWORD =            "admin"                     # 密碼
 MIN_SUBMISSION_INTERVAL =   "30"                        # 繳交間隔時間
