@@ -14,8 +14,12 @@ pip install -r requirements.txt
 echo.
 echo =========================================
 echo Setup complete!
-echo To start the application, run the following commands:
-echo 1. tool_env\Scripts\activate.bat
-echo 2. python auto_config.py
+echo To start the application, activate the environment first:
+echo   tool_env\Scripts\activate.bat
+echo.
+echo Then run one of the following scripts:
+echo   python AddContestTask.py  (Only create contest & tasks)
+echo   python AutoConfig.py      (Only update task parameters)
+echo   python Auto.py            (Do everything automatically)
 echo =========================================
 pause
