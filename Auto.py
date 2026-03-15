@@ -71,6 +71,7 @@ try:
     print(f"contest {CONTEST_NAME} 建立完成")
 
     # 4. Create new tasks (Q1~Q5)
+    driver.get(LOGIN_URL)
     total_tasks = len(TASK_NAMES)
     print(f"開始建立 {total_tasks} 個 task...")
 
