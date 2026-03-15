@@ -65,6 +65,7 @@ try:
     driver.execute_script("arguments[0].click();", submit_btn)
 
     #creat new task
+    driver.get(LOGIN_URL)
     total_tasks = len(TASK_NAMES)
     print(f"開始建立 {total_tasks} 個task")
 
