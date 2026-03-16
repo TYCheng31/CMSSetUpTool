@@ -8,7 +8,7 @@ Traditional CMS (Contest Management System) requires manual configuration for ev
 ## Installation
 
 ```bash
-git clone [https://github.com/TYCheng31/CMSSetUpTool.git](https://github.com/TYCheng31/CMSSetUpTool.git)
+git clone https://github.com/TYCheng31/CMSSetUpTool.git
 cd CMSSetUpTool
 python3 gui.py
 ```
