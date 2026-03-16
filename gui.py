@@ -79,7 +79,7 @@ btn_config.pack(fill="x", pady=5)
 btn_auto = tk.Button(frame_py, text="新增並配置\n(上面兩個按鈕的綜合版)", height=3, bg="#d9edf7", command=lambda: run_python_script("Auto.py"))
 btn_auto.pack(fill="x", pady=5)
 
-version_label = tk.Label(root, text="v2026.03.15", font=("Helvetica", 8), fg="gray")
+version_label = tk.Label(root, text="v2026.03.16", font=("Helvetica", 8), fg="gray")
 version_label.place(relx=0.98, rely=0.98, anchor="se")
 # ==========================================
 # 啟動介面
