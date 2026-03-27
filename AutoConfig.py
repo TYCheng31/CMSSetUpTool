@@ -18,13 +18,15 @@ def select_tasks_gui(tasks_info):
     
     root = tk.Tk()
     root.title("請勾選要自動設定的題目")
-    root.geometry("400x500")
-    root.configure(padx=10, pady=10)
+    
+    # 設定較大的預設尺寸，並嘗試自動最大化視窗
+    root.geometry("900x600")
+    root.configure(padx=20, pady=20)
     
     # 標題
-    tk.Label(root, text="勾選需要自動設定的題目 (預設全選):", font=("Arial", 12, "bold")).pack(pady=(0, 10))
+    tk.Label(root, text="勾選需要自動設定的題目 (預設全選):", font=("Arial", 14, "bold")).pack(pady=(0, 10))
     
-    # 建立可滾動的區域 (避免題目太多超出視窗)
+    # 建立可滾動的區域
     frame_container = tk.Frame(root)
     frame_container.pack(fill=tk.BOTH, expand=True)
     
@@ -43,12 +45,36 @@ def select_tasks_gui(tasks_info):
     canvas.pack(side="left", fill="both", expand=True)
     scrollbar.pack(side="right", fill="y")
     
-    # 動態產生 Checkbuttons
+    # --- 支援滑鼠滾輪 ---
+    def _on_mousewheel(event):
+        if event.num == 4:    # Linux 滾輪向上
+            canvas.yview_scroll(-1, "units")
+        elif event.num == 5:  # Linux 滾輪向下
+            canvas.yview_scroll(1, "units")
+        else:                 # Windows 滾輪
+            canvas.yview_scroll(int(-1*(event.delta/120)), "units")
+
+    canvas.bind_all("<MouseWheel>", _on_mousewheel)
+    canvas.bind_all("<Button-4>", _on_mousewheel)
+    canvas.bind_all("<Button-5>", _on_mousewheel)
+    
+    # ==========================================
+    # 動態產生 Checkbuttons (改為網格排列)
+    # ==========================================
     check_vars = []
-    for task in tasks_info:
+    MAX_COLUMNS = 5  # <--- 這裡可以修改一排要顯示幾個題目
+    
+    for index, task in enumerate(tasks_info):
         var = tk.BooleanVar(value=True) # 預設為勾選 (True)
-        chk = tk.Checkbutton(scrollable_frame, text=task["name"], variable=var, font=("Arial", 11))
-        chk.pack(anchor="w", pady=2, padx=5)
+        chk = tk.Checkbutton(scrollable_frame, text=task["name"], variable=var, font=("Arial", 12))
+        
+        # 計算應該被放在第幾列 (row)、第幾欄 (column)
+        row = index // MAX_COLUMNS
+        col = index % MAX_COLUMNS
+        
+        # 用 grid 將元件由左至右排列，並加上適當的間距
+        chk.grid(row=row, column=col, sticky="w", pady=5, padx=20)
+        
         check_vars.append((task, var))
         
     # 全選 / 取消全選 功能
@@ -59,18 +85,23 @@ def select_tasks_gui(tasks_info):
         for _, var in check_vars: var.set(False)
         
     btn_frame = tk.Frame(root)
-    btn_frame.pack(fill=tk.X, pady=10)
-    tk.Button(btn_frame, text="全部勾選", command=select_all).pack(side=tk.LEFT, expand=True, fill=tk.X, padx=5)
-    tk.Button(btn_frame, text="取消全選", command=deselect_all).pack(side=tk.LEFT, expand=True, fill=tk.X, padx=5)
+    btn_frame.pack(fill=tk.X, pady=15)
+    tk.Button(btn_frame, text="全部勾選", font=("Arial", 11), command=select_all).pack(side=tk.LEFT, expand=True, fill=tk.X, padx=10)
+    tk.Button(btn_frame, text="取消全選", font=("Arial", 11), command=deselect_all).pack(side=tk.LEFT, expand=True, fill=tk.X, padx=10)
     
     # 確認按鈕的觸發事件
     def on_confirm():
         for task, var in check_vars:
             if var.get():  # 如果有被勾選
                 selected_tasks.append(task)
-        root.destroy() # 關閉視窗，讓後續程式繼續執行
+                
+        # 關閉視窗前解除滾輪綁定，避免影響其他 Tkinter 視窗
+        canvas.unbind_all("<MouseWheel>")
+        canvas.unbind_all("<Button-4>")
+        canvas.unbind_all("<Button-5>")
+        root.destroy() 
         
-    tk.Button(root, text="確認並開始執行", bg="#5cb85c", fg="black", font=("Arial", 12, "bold"), height=2, command=on_confirm).pack(fill=tk.X, pady=5)
+    tk.Button(root, text="確認並開始執行", bg="#5cb85c", fg="black", font=("Arial", 14, "bold"), height=2, command=on_confirm).pack(fill=tk.X, pady=5)
     
     # 啟動並阻斷程式，直到視窗關閉
     root.mainloop()
@@ -82,8 +113,9 @@ def select_tasks_gui(tasks_info):
 # ==========================================
 options = webdriver.ChromeOptions()
 
+# 從 config.py 讀取是否要使用 Headless 模式
 if globals().get('HEADLESS_MODE', False):
-    options.add_argument('--headless')                             
+    options.add_argument('--headless')                              
 
 options.add_argument('--no-sandbox')             
 options.add_argument('--disable-dev-shm-usage')  
@@ -134,6 +166,12 @@ try:
             "name": task_name,
             "url": task_url
         })
+        
+    # ========================================================
+    # 💡 新增：將抓取到的題目依據名稱 (字母順序) 進行排序
+    # (加入 .lower() 是為了不區分大小寫，確保 A 和 a 排序在一起)
+    # ========================================================
+    tasks_info = sorted(tasks_info, key=lambda x: x["name"].lower())
         
     print(f"總共抓取到 {len(tasks_info)} 題，等待使用者勾選...")
     
@@ -194,7 +232,7 @@ try:
             
         print("全部設定完成")
 
-    time.sleep(5) 
+    time.sleep(3) 
 
 except Exception as e:
     print(f"錯誤: {e}")
