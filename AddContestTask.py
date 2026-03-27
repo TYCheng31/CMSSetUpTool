@@ -9,8 +9,10 @@ import time
 from config import *
 
 options = webdriver.ChromeOptions()
-# 讓瀏覽器背景執行就取消註解 VVVVVVVVV
-# options.add_argument('--headless')                              
+
+if globals().get('HEADLESS_MODE', False):
+    options.add_argument('--headless') 
+
 options.add_argument('--no-sandbox')             
 options.add_argument('--disable-dev-shm-usage')  
 options.add_argument('--ignore-certificate-errors')

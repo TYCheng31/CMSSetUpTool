@@ -1,23 +1,23 @@
-# CMS Automated Setup Tool
+# CMS 自動化設定工具
 
-Traditional CMS (Contest Management System) requires manual configuration for every single problem. This tool utilizes a Python-based web scraper to fully automate the setup process. 
+傳統的 CMS (Contest Management System，競賽管理系統) 需要手動設定每一道題目。此工具利用基於 Python 的網頁爬蟲，將設定過程完全自動化。
 
-* **Compatibility:** Applicable for non-virtualized CMS environments.
-* **Tested on:** Ubuntu 22.04
+* **相容性：** 適用於非虛擬環境的 CMS 。
+* **測試環境：** Ubuntu 22.04
 
-## Installation
+## 安裝
 
 ```bash
 sudo apt update
-git clone https://github.com/TYCheng31/CMSSetUpTool.git
+git clone [https://github.com/TYCheng31/CMSSetUpTool.git](https://github.com/TYCheng31/CMSSetUpTool.git)
 cd CMSSetUpTool
 sudo apt install python3-tk
 python3 gui.py
 ```
 
-After launching the GUI, please click the **"Install Environment"** button first to set up the necessary dependencies before using the tool.
+初次啟動圖形化介面 (GUI) 後，請先點擊 **安裝環境** 按鈕來設定必要的相依套件，接著再開始使用此工具。
 
-## Usage Guide
+## 使用指南
 
-For detailed instructions, please refer to the tutorial below:
-[https://hackmd.io/@OgocyKRSRuKEbEqdS0BoKg/HknGjNN9Zx](https://hackmd.io/@OgocyKRSRuKEbEqdS0BoKg/HknGjNN9Zx)
+詳細的操作說明，請參考下方教學：
+https://hackmd.io/@OgocyKRSRuKEbEqdS0BoKg/B19sOhQsbl

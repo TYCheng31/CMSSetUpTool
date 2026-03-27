@@ -3,6 +3,8 @@ from tkinter import messagebox
 import subprocess
 import os
 import webbrowser
+import importlib
+import re
 
 # ==========================================
 # 終端機執行指令包裝器
@@ -39,49 +41,141 @@ def open_tutorial():
     webbrowser.open(url)
 
 # ==========================================
+# 動態設定檔編輯器 (不寫死變數)
+# ==========================================
+def open_config_editor():
+    # 嘗試重新載入 config 確保抓到最新值
+    try:
+        import config
+        importlib.reload(config)
+    except Exception as e:
+        messagebox.showerror("錯誤", f"無法讀取 config.py:\n{e}")
+        return
+
+    editor = tk.Toplevel(root)
+    editor.title("⚙️ 設定 config.py")
+    editor.geometry("450x600")
+    editor.configure(padx=10, pady=10)
+
+    # 動態過濾出 config 模組中所有「大寫且不以底線開頭」的常數變數
+    config_vars = {k: v for k, v in vars(config).items() if k.isupper() and not k.startswith('_')}
+    vars_dict = {}
+
+    # 建立可滾動的框架 (避免變數太多時超出視窗)
+    container = tk.Frame(editor)
+    container.pack(fill="both", expand=True)
+
+    canvas = tk.Canvas(container)
+    scrollbar = tk.Scrollbar(container, orient="vertical", command=canvas.yview)
+    scrollable_frame = tk.Frame(canvas)
+
+    scrollable_frame.bind("<Configure>", lambda e: canvas.configure(scrollregion=canvas.bbox("all")))
+    canvas.create_window((0, 0), window=scrollable_frame, anchor="nw")
+    canvas.configure(yscrollcommand=scrollbar.set)
+
+    canvas.pack(side="left", fill="both", expand=True)
+    scrollbar.pack(side="right", fill="y")
+
+    # 動態生成介面欄位
+    row = 0
+    for key, val in config_vars.items():
+        tk.Label(scrollable_frame, text=f"{key}:", font=("Arial", 10)).grid(row=row, column=0, sticky="w", pady=8, padx=5)
+
+        if isinstance(val, bool): # 布林值 -> 核取方塊
+            var = tk.BooleanVar(value=val)
+            tk.Checkbutton(scrollable_frame, variable=var).grid(row=row, column=1, sticky="w", padx=5)
+        elif isinstance(val, list): # 列表 -> 轉為逗號分隔字串
+            var = tk.StringVar(value=",".join(str(x) for x in val))
+            tk.Entry(scrollable_frame, textvariable=var, width=28, font=("Arial", 10)).grid(row=row, column=1, sticky="w", padx=5)
+        else: # 字串或數字 -> 一般輸入框
+            var = tk.StringVar(value=str(val))
+            tk.Entry(scrollable_frame, textvariable=var, width=28, font=("Arial", 10)).grid(row=row, column=1, sticky="w", padx=5)
+
+        # 記錄變數物件與它的原始型態，存檔時會用到
+        vars_dict[key] = (var, type(val))
+        row += 1
+
+    # 儲存並寫入檔案
+    def save_and_close():
+        try:
+            with open("config.py", "r", encoding="utf-8") as f:
+                content = f.read()
+
+            # 遍歷剛剛記錄的所有變數，動態覆寫
+            for key, (tk_var, val_type) in vars_dict.items():
+                if val_type == bool:
+                    bool_val = "True" if tk_var.get() else "False"
+                    content = re.sub(rf'^({key}\s*=\s*)(True|False)', rf'\g<1>{bool_val}', content, flags=re.MULTILINE)
+                
+                elif val_type == list:
+                    items = [t.strip() for t in tk_var.get().split(",") if t.strip()]
+                    list_formatted = '["' + '", "'.join(items) + '"]'
+                    content = re.sub(rf'^({key}\s*=\s*)\[.*?\]', rf'\g<1>{list_formatted}', content, flags=re.MULTILINE)
+                
+                else:
+                    # 假設 config.py 中的字串都是被單引號或雙引號包住的
+                    new_val = tk_var.get()
+                    content = re.sub(rf'^({key}\s*=\s*)["\'].*?["\']', rf'\g<1>"{new_val}"', content, flags=re.MULTILINE)
+
+            with open("config.py", "w", encoding="utf-8") as f:
+                f.write(content)
+
+            messagebox.showinfo("儲存成功", "設定檔已成功更新！\n下次執行自動化腳本時將套用新設定。")
+            editor.destroy()
+        except Exception as e:
+            messagebox.showerror("儲存錯誤", f"寫入 config.py 時發生錯誤:\n{e}")
+
+    # 儲存按鈕放在底部
+    btn_save = tk.Button(editor, text="💾 儲存並關閉", bg="#5cb85c", fg="black", font=("Arial", 12, "bold"), command=save_and_close)
+    btn_save.pack(fill="x", pady=10, padx=10)
+
+
+# ==========================================
 # 建立主視窗介面
 # ==========================================
 root = tk.Tk()
 root.title("CMS 全自動化控制面板")
-root.geometry("400x700") # 稍微調整高度以符合按鈕數量
+root.geometry("400x800") 
 root.configure(padx=20, pady=20)
 
-# 使用教學 (移除 Emoji 避免 Ubuntu Tkinter 崩潰)
 btn_help = tk.Button(root, text="使用教學", font=("Arial", 9, "underline"), fg="blue", cursor="hand2", relief="flat", command=open_tutorial)
 btn_help.place(relx=1.0, rely=0.0, anchor="ne")
 
-# 標題標籤 (移除 Emoji，更改為 Arial 字體)
 title_label = tk.Label(root, text="CMS Setup Tool\n for NCUE", font=("Arial", 18, "bold"))
 title_label.pack(pady=(0, 20))
 
-# --- 區塊 1：系統指令 ---
-frame_sys = tk.LabelFrame(root, text=" 系統管理 (Shell Scripts) ", font=("Arial", 12), padx=10, pady=10)
-frame_sys.pack(fill="x", pady=10)
+# auto install
+frame_setup = tk.LabelFrame(root, text=" 環境安裝", font=("Arial", 12), padx=10, pady=10)
+frame_setup.pack(fill="x", pady=5)
 
-btn_setup = tk.Button(frame_sys, text="快速安裝所需環境\n(安裝完才能使用)", height=3,  fg="red",command=run_setup)
+btn_setup = tk.Button(frame_setup, text="安裝環境(初次使用才需安裝)\n(安裝完才能使用)", height=3, fg="red", command=run_setup)
 btn_setup.pack(fill="x", pady=5)
 
-# 保留單一個紅色粗體的重置按鈕，避免重複定義
-btn_reset = tk.Button(frame_sys, text="初始化並建立全新CMS\n(含contest*1、task*5、user*90)", height=3, font=("Arial", 10), command=run_reset_and_run)
+# user config
+frame_config = tk.LabelFrame(root, text=" 參數設定", font=("Arial", 12), padx=10, pady=10)
+frame_config.pack(fill="x", pady=5)
+
+btn_edit_config = tk.Button(frame_config, text="參數設定\n(帳號、題目、限制時間等)", height=3, command=open_config_editor)
+btn_edit_config.pack(fill="x", pady=5)
+
+# cms init
+frame_init = tk.LabelFrame(root, text=" 系統初始化", font=("Arial", 12), padx=10, pady=10)
+frame_init.pack(fill="x", pady=5)
+
+btn_reset = tk.Button(frame_init, text="初始化\n建立全新CMS(含contest*1、task*5、user*90)", height=3, font=("Arial", 10), command=run_reset_and_run)
 btn_reset.pack(fill="x", pady=5)
 
+# auto config
+frame_py = tk.LabelFrame(root, text=" 自動化設置", font=("Arial", 12), padx=10, pady=10)
+frame_py.pack(fill="x", pady=5)
 
-# --- 區塊 2：Python 自動化腳本 ---
-frame_py = tk.LabelFrame(root, text=" 任務自動化 (Python Scripts) ", font=("Arial", 12), padx=10, pady=10)
-frame_py.pack(fill="x", pady=10)
-
-btn_add = tk.Button(frame_py, text="新增 contest、task", height=3, command=lambda: run_python_script("AddContestTask.py"))
+btn_add = tk.Button(frame_py, text="自動新增 contest、task", height=3, command=lambda: run_python_script("AddContestTask.py"))
 btn_add.pack(fill="x", pady=5)
 
-btn_config = tk.Button(frame_py, text="配置 task 設定", height=3, command=lambda: run_python_script("AutoConfig.py"))
+btn_config = tk.Button(frame_py, text="自動配置 task 設定", height=3, command=lambda: run_python_script("AutoConfig.py"))
 btn_config.pack(fill="x", pady=5)
 
-btn_auto = tk.Button(frame_py, text="新增並配置\n(上面兩個按鈕的綜合版)", height=3, bg="#d9edf7", command=lambda: run_python_script("Auto.py"))
-btn_auto.pack(fill="x", pady=5)
-
-version_label = tk.Label(root, text="v2026.03.16", font=("Helvetica", 8), fg="gray")
+version_label = tk.Label(root, text="v2026.03.27", font=("Helvetica", 8), fg="gray")
 version_label.place(relx=0.98, rely=0.98, anchor="se")
-# ==========================================
-# 啟動介面
-# ==========================================
+
 root.mainloop()
