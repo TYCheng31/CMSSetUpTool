@@ -9,7 +9,7 @@
 
 ```bash
 sudo apt update
-git clone [https://github.com/TYCheng31/CMSSetUpTool.git](https://github.com/TYCheng31/CMSSetUpTool.git)
+git clone https://github.com/TYCheng31/CMSSetUpTool.git
 cd CMSSetUpTool
 sudo apt install python3-tk
 python3 gui.py
