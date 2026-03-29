@@ -37,7 +37,7 @@ def run_python_script(script_name):
     run_in_terminal(cmd, f"🚀 執行 {script_name}")
 
 def open_tutorial():
-    url = "https://hackmd.io/@OgocyKRSRuKEbEqdS0BoKg/HknGjNN9Zx" 
+    url = "https://hackmd.io/@OgocyKRSRuKEbEqdS0BoKg/B19sOhQsbl" 
     webbrowser.open(url)
 
 # ==========================================
