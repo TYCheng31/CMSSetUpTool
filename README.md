@@ -27,4 +27,4 @@ task的statements、testcases統一放在task_file中，檔案名稱要跟該題
 EX: Week1Q1的題目名稱為Week1Q1.pdf，測資名稱為Week1Q1.zip並放在task_file中
 
 詳細的操作說明，請參考下方教學：
-https://hackmd.io/@OgocyKRSRuKEbEqdS0BoKg/B19sOhQsbl
+[使用教學](https://hackmd.io/@OgocyKRSRuKEbEqdS0BoKg/Sku88wjsbl)
