@@ -4,22 +4,16 @@
 此工具基於 Python 的網頁爬蟲，將設定過程完全自動化。
 - 自動上傳題目敘述statements
 - 自動上傳題目測資testcases
-- 自動配置各題目設定(測資分數、程式碼執行時間、程式碼執行限制記憶體、題目繳交間隔時間限制)
-
+- 自動配置各題目設定(測資分數、程式碼執行時間、程式碼執行限制記憶體、題目繳交間隔時間限制)  
+  
 * **相容性：** 適用於非虛擬環境的 CMS 。
 * **測試環境：** Ubuntu 22.04
 
-## 安裝
+## 一鍵安裝
 
 ```bash
-sudo apt update
-git clone https://github.com/TYCheng31/CMSSetUpTool.git
-cd CMSSetUpTool
-sudo apt install python3-tk
-python3 gui.py
+curl -sSL https://raw.githubusercontent.com/TYCheng31/CMSSetUpTool/master/install.sh | bash
 ```
-
-初次啟動圖形化介面 (GUI) 後，請先點擊 **安裝環境** 按鈕來設定必要的相依套件，接著再開始使用此工具。
 
 ## 使用指南
 
