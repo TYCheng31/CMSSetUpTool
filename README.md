@@ -22,5 +22,6 @@ EX: Week1Q1的題目名稱為Week1Q1.pdf，測資名稱為Week1Q1.zip並放在ta
   
 測資命名規則(.txt)  
 *測資名稱Q1_in1.txt、Q1_out1.txt、Q1_in2.txt、Q1_out2.txt以此類推(-> "Q1_inX.txt" 只需修改"X"數值)  
+可參考task_file內的命名規則(適用於task name為Q1的題目)  
 
 詳細的操作說明，請參考[使用教學](https://hackmd.io/@OgocyKRSRuKEbEqdS0BoKg/Sku88wjsbl)
