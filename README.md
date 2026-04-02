@@ -19,5 +19,8 @@ curl -sSL https://raw.githubusercontent.com/TYCheng31/CMSSetUpTool/master/instal
 
 task的statements、testcases統一放在task_file中，檔案名稱要跟該題的題目名稱一樣  
 EX: Week1Q1的題目名稱為Week1Q1.pdf，測資名稱為Week1Q1.zip並放在task_file中  
+  
+測資命名規則(.txt)  
+*測資名稱Q1_in1.txt、Q1_out1.txt、Q1_in2.txt、Q1_out2.txt以此類推(-> "Q1_inX.txt" 只需修改"X"數值)  
 
 詳細的操作說明，請參考[使用教學](https://hackmd.io/@OgocyKRSRuKEbEqdS0BoKg/Sku88wjsbl)
