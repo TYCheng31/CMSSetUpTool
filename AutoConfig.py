@@ -8,6 +8,7 @@ from selenium.webdriver.support.ui import Select
 import time
 import tkinter as tk
 from tkinter import ttk
+import os  # 新增 os 模組以處理檔案絕對路徑
 from config import *
 
 # ==========================================
@@ -99,6 +100,7 @@ def select_tasks_gui(tasks_info):
         canvas.unbind_all("<MouseWheel>")
         canvas.unbind_all("<Button-4>")
         canvas.unbind_all("<Button-5>")
+        root.quit()
         root.destroy() 
         
     tk.Button(root, text="確認並開始執行", bg="#5cb85c", fg="black", font=("Arial", 14, "bold"), height=2, command=on_confirm).pack(fill=tk.X, pady=5)
@@ -115,7 +117,7 @@ options = webdriver.ChromeOptions()
 
 # 從 config.py 讀取是否要使用 Headless 模式
 if globals().get('HEADLESS_MODE', False):
-    options.add_argument('--headless')                              
+    options.add_argument('--headless')                             
 
 options.add_argument('--no-sandbox')             
 options.add_argument('--disable-dev-shm-usage')  
@@ -175,7 +177,7 @@ try:
         
     print(f"總共抓取到 {len(tasks_info)} 題，等待使用者勾選...")
     
-    # 呼叫 GUI 讓使用者勾選
+    # 讓使用者勾選題目
     tasks_to_update = select_tasks_gui(tasks_info)
     
     if not tasks_to_update:
@@ -184,7 +186,7 @@ try:
         print(f"開始執行，共 {len(tasks_to_update)} 題需要修改")
         time.sleep(1) 
 
-        # 針對使用者「勾選的題目」進行修改
+        # 設定使用者勾選的題目
         for index, task in enumerate(tasks_to_update, start=1):
             url = task["url"]
             name = task["name"]
@@ -227,6 +229,74 @@ try:
             update_btn = wait.until(EC.presence_of_element_located((By.XPATH, update_btn_xpath)))
             driver.execute_script("arguments[0].click();", update_btn)
             
+            # 上傳 Statement (PDF)
+            # 題目要統一放在/task_file底下
+            file_path = os.path.abspath(os.path.join("task_file", f"{name}.pdf"))
+            if os.path.exists(file_path):
+                # 1. 點擊 add
+                add_link_xpath = "//a[contains(@href, 'statements/add')]"
+                add_link = wait.until(EC.presence_of_element_located((By.XPATH, add_link_xpath)))
+                driver.execute_script("arguments[0].click();", add_link)
+
+                # 2. 輸入 C/C++
+                lang_input = wait.until(EC.presence_of_element_located((By.NAME, "language")))
+                lang_input.clear()
+                lang_input.send_keys("C/C++")
+
+                # 3. 找到目前 task name 並上傳資料夾中跟 task name 名稱一樣的檔案
+                statement_file_input = wait.until(EC.presence_of_element_located((By.NAME, "statement")))
+                statement_file_input.send_keys(file_path)
+
+                # 4. 點擊繳交 (Upload)
+                upload_submit_xpath = "//input[@type='submit' and @value='Upload']"
+                upload_btn = wait.until(EC.presence_of_element_located((By.XPATH, upload_submit_xpath)))
+                driver.execute_script("arguments[0].click();", upload_btn)
+            else:
+                print(f"  -> [跳過] 找不到 Statement (題目): {file_path}")
+            
+            # 新增測資
+            # 測資要統一放在/task_file底下
+            driver.get(url)
+
+            archive_file_path = os.path.abspath(os.path.join("task_file", f"{name}.zip"))
+            if os.path.exists(archive_file_path):
+                # 1. 點擊 Add multiple testcases
+                add_testcases_xpath = "//a[contains(@href, 'testcases/add_multiple')]"
+                add_testcases_link = wait.until(EC.presence_of_element_located((By.XPATH, add_testcases_xpath)))
+                driver.execute_script("arguments[0].click();", add_testcases_link)
+
+                # 2. 上傳 /task_file 裡面與 task name 相同名稱的檔案
+                archive_input = wait.until(EC.presence_of_element_located((By.NAME, "archive")))
+                archive_input.send_keys(archive_file_path)
+
+                # 3. 勾選 public
+                public_checkbox = wait.until(EC.presence_of_element_located((By.NAME, "public")))
+                if not public_checkbox.is_selected():
+                    driver.execute_script("arguments[0].click();", public_checkbox)
+
+                # 4. 勾選 overwrite
+                overwrite_checkbox = wait.until(EC.presence_of_element_located((By.NAME, "overwrite")))
+                if not overwrite_checkbox.is_selected():
+                    driver.execute_script("arguments[0].click();", overwrite_checkbox)
+
+                # 5. 輸入 input_template ("Q1_in*.txt")
+                input_template = wait.until(EC.presence_of_element_located((By.NAME, "input_template")))
+                input_template.clear()
+                input_template.send_keys("Q1_in*.txt")
+
+                # 6. 輸入 output_template ("Q1_out*.txt")
+                output_template = wait.until(EC.presence_of_element_located((By.NAME, "output_template")))
+                output_template.clear()
+                output_template.send_keys("Q1_out*.txt")
+
+                # 7. 點擊繳交 (Upload)
+                upload_archive_btn = wait.until(EC.presence_of_element_located((By.XPATH, "//input[@type='submit' and @value='Upload']")))
+                driver.execute_script("arguments[0].click();", upload_archive_btn)
+            else:
+                print(f"  -> [跳過] 找不到 Testcases (測資): {archive_file_path}")
+            
+            # ==========================================
+
             print(f"  -> {name} 設定完成")
             time.sleep(1) 
             
