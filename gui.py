@@ -35,7 +35,7 @@ def run_python_script(script_name):
     run_in_terminal(cmd, f"🚀 執行 {script_name}")
 
 def open_tutorial():
-    url = "https://hackmd.io/@OgocyKRSRuKEbEqdS0BoKg/Sku88wjsbl" 
+    url = "https://hackmd.io/@OgocyKRSRuKEbEqdS0BoKg/B19sOhQsbl" 
     webbrowser.open(url)
 
 # ==========================================
@@ -117,9 +117,9 @@ def open_config_editor():
 
             with open("config.py", "w", encoding="utf-8") as f:
                 f.write(content)
-
-            messagebox.showinfo("儲存成功", "設定檔已成功更新！\n下次執行自動化腳本時將套用新設定。")
             editor.destroy()
+            messagebox.showinfo("儲存成功", "設定檔已成功更新！\n下次執行自動化腳本時將套用新設定。")
+            
         except Exception as e:
             messagebox.showerror("儲存錯誤", f"寫入 config.py 時發生錯誤:\n{e}")
 
