@@ -35,7 +35,7 @@ def run_python_script(script_name):
     run_in_terminal(cmd, f"🚀 執行 {script_name}")
 
 def open_tutorial():
-    url = "https://hackmd.io/@OgocyKRSRuKEbEqdS0BoKg/B19sOhQsbl" 
+    url = "https://hackmd.io/@OgocyKRSRuKEbEqdS0BoKg/Sku88wjsbl" 
     webbrowser.open(url)
 
 # ==========================================
@@ -166,7 +166,7 @@ btn_add.pack(fill="x", pady=5)
 btn_config = tk.Button(frame_py, text="自動配置 task 設定", height=3, command=lambda: run_python_script("AutoConfig.py"))
 btn_config.pack(fill="x", pady=5)
 
-version_label = tk.Label(root, text="v2026.03.27", font=("Helvetica", 8), fg="gray")
+version_label = tk.Label(root, text="v2026.04.02", font=("Helvetica", 8), fg="gray")
 version_label.place(relx=0.98, rely=0.98, anchor="se")
 
 root.mainloop()
