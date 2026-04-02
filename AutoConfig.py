@@ -300,7 +300,7 @@ try:
             print(f"  -> {name} 設定完成")
             time.sleep(1) 
             
-        print("全部設定完成")
+        print("全部task設定完成!!!")
 
     time.sleep(3) 
 
