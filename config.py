@@ -15,4 +15,4 @@ TIME_LIMIT =                "5.0"                           # 程式執行時間
 MEMORY_LIMIT =              "512"                           # 程式執行空間限制 (MB)
 SCORE_PER_TASK =            "4"                             # 每個測資的得分數
 
-HEADLESS_MODE = False
+HEADLESS_MODE = True
