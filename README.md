@@ -7,15 +7,11 @@
 
 ## 安裝
 
-```bash
-sudo apt update
-git clone https://github.com/TYCheng31/CMSSetUpTool.git
-cd CMSSetUpTool
-sudo apt install python3-tk
-python3 gui.py
-```
+一鍵安裝
 
-初次啟動圖形化介面 (GUI) 後，請先點擊 **安裝環境** 按鈕來設定必要的相依套件，接著再開始使用此工具。
+```bash
+curl -sSL https://raw.githubusercontent.com/TYCheng31/CMSSetUpTool/master/install.sh | bash
+```
 
 ## 使用指南
 

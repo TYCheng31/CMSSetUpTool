@@ -25,8 +25,6 @@ def run_in_terminal(command, title):
 # ==========================================
 # 各按鈕對應的執行功能
 # ==========================================
-def run_setup():
-    run_in_terminal("chmod +x setup.sh && ./setup.sh", "🔧 環境安裝 (setup.sh)")
 
 def run_reset_and_run():
     run_in_terminal("chmod +x reset_and_run.sh && ./reset_and_run.sh", "🔥 終極重置與建置 (reset_and_run.sh)")
@@ -135,7 +133,7 @@ def open_config_editor():
 # ==========================================
 root = tk.Tk()
 root.title("CMS 全自動化控制面板")
-root.geometry("400x800") 
+root.geometry("400x620") 
 root.configure(padx=20, pady=20)
 
 btn_help = tk.Button(root, text="使用教學", font=("Arial", 9, "underline"), fg="blue", cursor="hand2", relief="flat", command=open_tutorial)
@@ -143,13 +141,6 @@ btn_help.place(relx=1.0, rely=0.0, anchor="ne")
 
 title_label = tk.Label(root, text="CMS Setup Tool\n for NCUE", font=("Arial", 18, "bold"))
 title_label.pack(pady=(0, 20))
-
-# auto install
-frame_setup = tk.LabelFrame(root, text=" 環境安裝", font=("Arial", 12), padx=10, pady=10)
-frame_setup.pack(fill="x", pady=5)
-
-btn_setup = tk.Button(frame_setup, text="安裝環境(初次使用才需安裝)\n(安裝完才能使用)", height=3, fg="red", command=run_setup)
-btn_setup.pack(fill="x", pady=5)
 
 # user config
 frame_config = tk.LabelFrame(root, text=" 參數設定", font=("Arial", 12), padx=10, pady=10)
