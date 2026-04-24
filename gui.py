@@ -38,9 +38,12 @@ def run_in_terminal(command, title):
 # ==========================================
 
 def run_ResetCms():
-    # 先切換到 script 資料夾再執行
     cmd = f"cd '{SCRIPT_DIR}' && chmod +x ResetCms.sh && ./ResetCms.sh"
-    run_in_terminal(cmd, "🔥 終極重置與建置 (ResetCms.sh)")
+    run_in_terminal(cmd, "🔥 重置CMS (ResetCms.sh)") 
+
+def run_AddUser():
+    cmd = f"cd '{SCRIPT_DIR}' && chmod +x AddUser.sh && ./AddUser.sh"
+    run_in_terminal(cmd, "🔥 新增使用者 (AddUser.sh)")
 
 def run_python_script(script_name):
     # 自動啟動虛擬環境 (假設 tool_env 在主層級)，並切換到 script 資料夾執行
@@ -175,8 +178,11 @@ btn_reset.pack(fill="x", pady=5)
 frame_py = tk.LabelFrame(root, text=" 自動化設置", font=("Arial", 12), padx=10, pady=10)
 frame_py.pack(fill="x", pady=5)
 
-btn_add = tk.Button(frame_py, text="全自動創題目", height=3, command=lambda: run_python_script("AutomaticConfig.py"))
+btn_add = tk.Button(frame_py, text="全自動新增使用者", height=3, font=("Arial", 10), command=run_AddUser)
 btn_add.pack(fill="x", pady=5)
+
+btn_auto = tk.Button(frame_py, text="全自動設定題目", height=3, command=lambda: run_python_script("AutomaticConfig.py"))
+btn_auto.pack(fill="x", pady=5)
 
 version_label = tk.Label(root, text="v2026.04.02", font=("Helvetica", 8), fg="gray")
 version_label.place(relx=0.98, rely=0.98, anchor="se")
