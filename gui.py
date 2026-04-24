@@ -5,6 +5,17 @@ import os
 import webbrowser
 import importlib
 import re
+import sys
+
+# ==========================================
+# 路徑設定 (確保不論在哪裡執行，路徑都是正確的)
+# ==========================================
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+SCRIPT_DIR = os.path.join(BASE_DIR, "script")
+
+# 將 script 資料夾加入系統路徑，這樣才能 import config
+if SCRIPT_DIR not in sys.path:
+    sys.path.append(SCRIPT_DIR)
 
 # ==========================================
 # 終端機執行指令包裝器
@@ -20,18 +31,21 @@ def run_in_terminal(command, title):
     try:
         subprocess.Popen(terminal_cmd, shell=True)
     except Exception as e:
-        messagebox.showerror("執行錯誤", f"無法啟動終端機:\n{e}")
+        messagebox.showerror("執行錯誤", f"無法啟動終端機:\n{e}") # 修正了原版 v.showerror 的未定義錯誤
 
 # ==========================================
 # 各按鈕對應的執行功能
 # ==========================================
 
-def run_reset_and_run():
-    run_in_terminal("chmod +x reset_and_run.sh && ./reset_and_run.sh", "🔥 終極重置與建置 (reset_and_run.sh)")
+def run_ResetCms():
+    # 先切換到 script 資料夾再執行
+    cmd = f"cd '{SCRIPT_DIR}' && chmod +x ResetCms.sh && ./ResetCms.sh"
+    run_in_terminal(cmd, "🔥 終極重置與建置 (ResetCms.sh)")
 
 def run_python_script(script_name):
-    # 自動啟動虛擬環境並執行指定的 Python 腳本
-    cmd = f"source tool_env/bin/activate && python {script_name}"
+    # 自動啟動虛擬環境 (假設 tool_env 在主層級)，並切換到 script 資料夾執行
+    env_path = os.path.join(BASE_DIR, "tool_env", "bin", "activate")
+    cmd = f"source '{env_path}' && cd '{SCRIPT_DIR}' && python {script_name}"
     run_in_terminal(cmd, f"🚀 執行 {script_name}")
 
 def open_tutorial():
@@ -95,8 +109,9 @@ def open_config_editor():
 
     # 儲存並寫入檔案
     def save_and_close():
+        config_path = os.path.join(SCRIPT_DIR, "config.py")
         try:
-            with open("config.py", "r", encoding="utf-8") as f:
+            with open(config_path, "r", encoding="utf-8") as f:
                 content = f.read()
 
             # 遍歷剛剛記錄的所有變數，動態覆寫
@@ -115,7 +130,7 @@ def open_config_editor():
                     new_val = tk_var.get()
                     content = re.sub(rf'^({key}\s*=\s*)["\'].*?["\']', rf'\g<1>"{new_val}"', content, flags=re.MULTILINE)
 
-            with open("config.py", "w", encoding="utf-8") as f:
+            with open(config_path, "w", encoding="utf-8") as f:
                 f.write(content)
             editor.destroy()
             messagebox.showinfo("儲存成功", "設定檔已成功更新！\n下次執行自動化腳本時將套用新設定。")
@@ -153,18 +168,15 @@ btn_edit_config.pack(fill="x", pady=5)
 frame_init = tk.LabelFrame(root, text=" 系統初始化", font=("Arial", 12), padx=10, pady=10)
 frame_init.pack(fill="x", pady=5)
 
-btn_reset = tk.Button(frame_init, text="初始化\n建立全新CMS(含contest*1、task*5、user*90)", height=3, font=("Arial", 10), command=run_reset_and_run)
+btn_reset = tk.Button(frame_init, text="初始化\n建立全新CMS(含contest*1、task*5、user*90)", height=3, font=("Arial", 10), command=run_ResetCms)
 btn_reset.pack(fill="x", pady=5)
 
 # auto config
 frame_py = tk.LabelFrame(root, text=" 自動化設置", font=("Arial", 12), padx=10, pady=10)
 frame_py.pack(fill="x", pady=5)
 
-btn_add = tk.Button(frame_py, text="自動新增 contest、task", height=3, command=lambda: run_python_script("AddContestTask.py"))
+btn_add = tk.Button(frame_py, text="全自動創題目", height=3, command=lambda: run_python_script("AutomaticConfig.py"))
 btn_add.pack(fill="x", pady=5)
-
-btn_config = tk.Button(frame_py, text="自動配置 task 設定", height=3, command=lambda: run_python_script("AutoConfig.py"))
-btn_config.pack(fill="x", pady=5)
 
 version_label = tk.Label(root, text="v2026.04.02", font=("Helvetica", 8), fg="gray")
 version_label.place(relx=0.98, rely=0.98, anchor="se")
